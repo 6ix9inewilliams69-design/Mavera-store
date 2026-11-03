@@ -56,12 +56,13 @@ export default function HomePage() {
   async function submitEnquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!supabase) { setNotice("Our enquiry form is being connected. Please check back shortly."); return; }
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     setSending(true); setNotice("");
     const { error } = await supabase.from("store_enquiries").insert({ customer_name: String(form.get("enquiryName") || "").trim(), customer_phone: String(form.get("enquiryPhone") || "").trim(), customer_email: String(form.get("enquiryEmail") || "").trim() || null, subject: String(form.get("subject") || "General store enquiry").trim(), message: String(form.get("message") || "").trim(), preferred_store: String(form.get("preferredStore") || "Kenya").trim(), status: "new" });
     setSending(false);
     if (error) { setNotice("We couldn't send your enquiry. Please try again."); return; }
-    event.currentTarget.reset(); setNotice("Thank you. Your enquiry has been sent to MAVÉRA.");
+    formElement.reset(); setNotice("Thank you. Your enquiry has been sent to MAVÉRA.");
   }
 
   return <main>
